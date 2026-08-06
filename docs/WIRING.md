@@ -69,6 +69,7 @@ Those values are saved in ESP32 flash and pushed to the mount with `:St` `:Sg` `
 
 ## PDFs
 
+- `WIRING.pdf` (this guide)
 - `WIRING_DIAGRAM.pdf`
 - `SYSTEM_FLOWCHARTS.pdf`
 - Chrome preview: `preview/AutostarII_Preview.html`
