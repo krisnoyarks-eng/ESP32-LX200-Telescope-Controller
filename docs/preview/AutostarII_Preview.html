@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Autostar II Preview · LX200 GPS (offline reference)</title>
+<style>
+:root{--bg:#0a0a0c;--lcdbg:#0c1a0c;--lcd:#7CFF7C;--lcdim:#3a6b3a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(ellipse at top,#1c1c22,#070708 60%);color:#ddd;font-family:Helvetica,Arial,sans-serif;min-height:100vh}
+.banner{background:#1e3a1e;color:#9f9;text-align:center;padding:8px;font-size:.8rem;border-bottom:1px solid #2a5}
+h1{text-align:center;font-size:1rem;letter-spacing:.12em;color:#9aa;margin:14px 0 4px;font-weight:600}
+.sub{text-align:center;color:#666;font-size:.75rem;margin:0 0 12px}
+.layout{max-width:920px;margin:0 auto;padding:8px 12px 32px;display:grid;gap:16px}
+@media(min-width:860px){.layout{grid-template-columns:380px 1fr}}
+.handbox{background:linear-gradient(160deg,#25252b,#141418 50%,#1c1c20);border-radius:28px;padding:18px 16px 22px;border:1px solid #333;box-shadow:0 20px 50px #000a,inset 0 1px 0 #ffffff10;max-width:380px;margin:0 auto}
+.brand{text-align:center;font-size:.65rem;letter-spacing:.2em;color:#777;margin-bottom:8px}
+.lcd-bezel{background:#0a0a0a;border-radius:8px;padding:10px;border:2px solid #444;margin-bottom:12px}
+.lcd{background:var(--lcdbg);border:1px solid #1a3a1a;border-radius:4px;padding:10px 12px;min-height:64px;font-family:"Courier New",monospace;color:var(--lcd);font-size:1.05rem;line-height:1.35;text-shadow:0 0 6px #3f3}
+.lcd .dim{color:var(--lcdim);font-size:.72rem;margin-top:4px}
+.oled-sim{margin:0 auto 12px;width:256px;height:128px;background:#050505;border:3px solid #333;border-radius:6px;padding:6px;image-rendering:pixelated}
+.oled-sim canvas{width:100%;height:100%;background:#000}
+.row{display:flex;gap:8px;justify-content:center;margin:8px 0}
+.row.spread{justify-content:space-between}
+button{appearance:none;border:0;cursor:pointer;font-family:inherit;color:#e8e8ec;background:linear-gradient(180deg,#3a3a42,#222228);border-radius:10px;padding:12px 8px;font-size:.78rem;font-weight:700;letter-spacing:.04em;box-shadow:0 3px 0 #0d0d0f,0 4px 8px #0008;border:1px solid #4a4a52;user-select:none}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 #0d0d0f}
+button.wide{flex:1;padding:14px 6px}
+button.goto{background:linear-gradient(180deg,#4a3030,#2a1515);border-color:#633;color:#fcc}
+button.dir{width:64px;height:48px;font-size:1.1rem;border-radius:12px}
+button.num{width:31%;padding:14px 4px;background:linear-gradient(180deg,#323238,#1e1e22)}
+button.num small{display:block;font-size:.62rem;font-weight:600;color:#9ab;margin-top:2px}
+button.scroll{width:48%;padding:10px;font-size:.9rem}
+button.tiny{padding:8px 10px;font-size:.7rem;border-radius:8px}
+.dpad{display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:48px 48px 48px;gap:6px;justify-content:center;margin:10px 0}
+.dpad .n{grid-column:2;grid-row:1}.dpad .w{grid-column:1;grid-row:2}.dpad .e{grid-column:3;grid-row:2}.dpad .s{grid-column:2;grid-row:3}
+.dpad .c{grid-column:2;grid-row:2;background:#151518;border-radius:50%;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#555}
+.keypad{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.panel{background:#121216;border:1px solid #2a2a30;border-radius:16px;padding:14px}
+.panel h2{margin:0 0 10px;font-size:.8rem;color:#888;letter-spacing:.1em;text-transform:uppercase}
+.catalog{max-height:280px;overflow:auto;border:1px solid #2a2a30;border-radius:10px}
+.catalog button{display:flex;width:100%;justify-content:space-between;border-radius:0;box-shadow:none;border:0;border-bottom:1px solid #222;background:#18181c;text-align:left;padding:10px 12px}
+.catalog button.on{background:#243018}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.filters button{padding:7px 10px;font-size:.7rem}.filters button.on{background:#2a4020;border-color:#4a6}
+input{width:100%;background:#0c0c10;border:1px solid #333;color:#ddd;border-radius:8px;padding:8px;margin-bottom:8px}
+.fieldrow{display:flex;flex-wrap:wrap;gap:8px}.field{flex:1;min-width:90px}
+.field label{display:block;font-size:.65rem;color:#777;margin-bottom:3px}
+.hint{font-size:.72rem;color:#666;margin-top:8px;line-height:1.4}
+#rawOut{font-family:monospace;font-size:.8rem;color:var(--lcd);background:#0c1a0c;border:1px solid #1a3a1a;border-radius:8px;padding:10px;min-height:44px;white-space:pre-wrap}
+/* Setup wizard */
+#setup{position:fixed;inset:0;background:#000c;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+#setup.hidden{display:none}
+.setup-card{background:#16161c;border:1px solid #3a3;border-radius:16px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 60px #000}
+.setup-card h2{margin:0 0 8px;color:#7CFF7C;font-size:1.1rem}
+.setup-card p{color:#999;font-size:.85rem;line-height:1.4;margin:0 0 14px}
+.wire{font-family:monospace;font-size:.72rem;background:#0a0a0e;border:1px solid #333;border-radius:8px;padding:10px;color:#9ab;white-space:pre;overflow:auto;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="banner">OFFLINE PREVIEW — same UI the ESP32 serves at http://192.168.4.1 · buttons simulate LX200 replies (no hardware needed)</div>
+<h1>MEADE · AUTOSTAR II</h1>
+<p class="sub">LX200 GPS · ESP32 Wi-Fi handbox · RS232 · start-location setup</p>
+
+<!-- First-run setup (like Autostar site / time) -->
+<div id="setup">
+  <div class="setup-card">
+    <h2>Setup · Start location</h2>
+    <p>Autostar II asks for your site before GO TO works. Enter latitude / longitude / date / time (where the telescope is sitting), then continue. This is saved and also sent to the LX200 GPS over RS232.</p>
+    <div class="fieldrow">
+      <div class="field"><label>Latitude ° (N +)</label><input id="su_lat" type="number" step="0.0001" value="40.0150"/></div>
+      <div class="field"><label>Longitude ° (E + / W −)</label><input id="su_lon" type="number" step="0.0001" value="-105.2705"/></div>
+    </div>
+    <div class="fieldrow">
+      <div class="field"><label>UTC offset minutes</label><input id="su_tz" type="number" value="-360"/></div>
+      <div class="field"><label>Elevation m (optional)</label><input id="su_elev" type="number" value="1655"/></div>
+    </div>
+    <div class="fieldrow">
+      <div class="field"><label>Year</label><input id="su_year" type="number"/></div>
+      <div class="field"><label>Month</label><input id="su_month" type="number"/></div>
+      <div class="field"><label>Day</label><input id="su_day" type="number"/></div>
+    </div>
+    <div class="fieldrow">
+      <div class="field"><label>Hour</label><input id="su_hour" type="number"/></div>
+      <div class="field"><label>Min</label><input id="su_minute" type="number"/></div>
+      <div class="field"><label>Sec</label><input id="su_second" type="number"/></div>
+    </div>
+    <div class="row" style="justify-content:flex-start;margin-top:8px">
+      <button class="tiny" onclick="fillNow()">Use browser now</button>
+      <button class="goto" style="flex:1" onclick="finishSetup()">Save &amp; continue →</button>
+    </div>
+    <div class="wire">ESP32 GPIO wiring (AdhanOLED same screen)
+GPIO21 SDA → OLED SDA    GPIO22 SCL → OLED SCL
+GPIO16 RX2 ← MAX3232 R1OUT
+GPIO17 TX2 → MAX3232 T1IN
+3V3/GND → OLED + MAX3232
+MAX3232 RS232 → LX200 GPS jack "RS232" (NOT HBX)
+RJ pin3=RX-in  pin4=GND  pin5=TX-out</div>
+  </div>
+</div>
+
+<div class="layout">
+<section class="handbox">
+  <div class="brand">AUTOSTAR II · SMART FINDER</div>
+  <p style="text-align:center;font-size:.65rem;color:#666;margin:0 0 6px">Physical OLED (SH1106 · same as Adhan clock)</p>
+  <div class="oled-sim"><canvas id="oled" width="128" height="64"></canvas></div>
+  <div class="lcd-bezel">
+    <div class="lcd">
+      <div id="lcd1">Complete Setup</div>
+      <div id="lcd2">Enter start location</div>
+      <div class="dim" id="lcdDim">First boot · site required</div>
+    </div>
+  </div>
+  <div class="row spread">
+    <button class="wide" onclick="pressEnter()">ENTER</button>
+    <button class="wide" onclick="pressMode()">MODE</button>
+    <button class="wide goto" onclick="pressGoto()">GO TO</button>
+  </div>
+  <div class="dpad">
+    <button class="dir n" onclick="sim('MOVE N')">▲</button>
+    <button class="dir w" onclick="sim('MOVE W')">◄</button>
+    <div class="c">N/S/E/W</div>
+    <button class="dir e" onclick="sim('MOVE E')">►</button>
+    <button class="dir s" onclick="sim('MOVE S')">▼</button>
+  </div>
+  <div class="keypad">
+    <button class="num" onclick="keySpeed()">1<small>SPEED</small></button>
+    <button class="num" onclick="setFilter('cald')">2<small>CALD</small></button>
+    <button class="num" onclick="setFilter('messier')">3<small>M</small></button>
+    <button class="num" onclick="sim('FOCUS')">4<small>FOCUS</small></button>
+    <button class="num" onclick="setFilter('ss')">5<small>SS</small></button>
+    <button class="num" onclick="setFilter('star')">6<small>STAR</small></button>
+    <button class="num" onclick="sim('RETICLE jack')">7<small>RET</small></button>
+    <button class="num" onclick="setFilter('deep')">8<small>IC</small></button>
+    <button class="num" onclick="setFilter('deep')">9<small>NGC</small></button>
+    <button class="num" onclick="digit('0')">0<small>·</small></button>
+  </div>
+  <div class="row">
+    <button class="scroll" onclick="scrollSel(-1)">▲ SCROLL</button>
+    <button class="scroll" onclick="scrollSel(1)">SCROLL ▼</button>
+  </div>
+  <div class="row">
+    <button class="tiny" onclick="cmd(':GR#')">Get RA</button>
+    <button class="tiny" onclick="cmd(':GD#')">Get Dec</button>
+    <button class="tiny" onclick="cmd(':GA#')">Alt</button>
+    <button class="tiny" onclick="cmd(':GZ#')">Az</button>
+    <button class="tiny" onclick="cmd(':GV#')">Ver</button>
+    <button class="tiny" onclick="sim('STOP :Q#')" style="background:#402020">STOP</button>
+  </div>
+</section>
+
+<section>
+  <div class="panel">
+    <h2>Object library · live response</h2>
+    <div id="rawOut">Waiting for setup…</div>
+    <div class="filters" style="margin-top:10px">
+      <button class="on" data-f="all" onclick="setFilter('all',this)">ALL</button>
+      <button data-f="ss" onclick="setFilter('ss',this)">SS</button>
+      <button data-f="star" onclick="setFilter('star',this)">STAR</button>
+      <button data-f="messier" onclick="setFilter('messier',this)">M</button>
+      <button data-f="deep" onclick="setFilter('deep',this)">DEEP</button>
+    </div>
+    <input id="search" placeholder="Search…" oninput="renderCatalog()"/>
+    <div class="catalog" id="catalog"></div>
+    <p class="hint">Flow: <b>Setup location</b> → pick object → <b>ENTER</b> → <b>GO TO</b>. Get RA/Dec prints the mount reply on the green LCD instantly (on real ESP32 via Wi‑Fi→RS232).</p>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h2>Wiring reminder</h2>
+    <div class="wire" style="margin:0">Telescope base: plug RJ into RS232 (not HBX)
+
+ESP32          MAX3232           LX200 GPS
+GPIO17 TX  →   T1IN / T1OUT  →   RJ pin 3 (RX in)
+GPIO16 RX  ←   R1OUT / R1IN  ←   RJ pin 5 (TX out)
+GND        ↔   GND           ↔   RJ pin 4
+3V3/5V     →   VCC
+
+OLED (AdhanOLED SH1106):
+GPIO21→SDA  GPIO22→SCL  3V3  GND</div>
+    <div class="row" style="justify-content:flex-start;margin-top:10px">
+      <button class="tiny" onclick="document.getElementById('setup').classList.remove('hidden')">Re-open setup</button>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const DEMO=true;
+const catalog=[
+  {name:'Sun',kind:2,mag:-26.7},{name:'Moon',kind:3,mag:-12.6},
+  {name:'Mercury',kind:1,mag:0},{name:'Venus',kind:1,mag:-4},{name:'Mars',kind:1,mag:1},
+  {name:'Jupiter',kind:1,mag:-2},{name:'Saturn',kind:1,mag:0.5},
+  {name:'Sirius',kind:0,mag:-1.46},{name:'Vega',kind:0,mag:0.03},{name:'Betelgeuse',kind:0,mag:0.42},
+  {name:'Polaris',kind:0,mag:1.98},{name:'M42 Orion',kind:4,mag:4},{name:'M31 Andromeda',kind:4,mag:3.4},
+  {name:'M13 Hercules',kind:4,mag:5.8},{name:'M45 Pleiades',kind:4,mag:1.6}
+];
+let filtered=[], selected=null, selIdx=0, filter='all', mode=0, rate=3;
+const RATES=['GUIDE','CENTER','FIND','SLEW'];
+let site={lat:40.015,lon:-105.2705,tz:-360,setupDone:false};
+let status={ra:'05:32:00',dec:'+22*00:00',alt:'+45*00:00',az:'180*00:00',connected:false,target:'-',rate:'SLEW'};
+
+function el(id){return document.getElementById(id)}
+function setLcd(a,b,dim){el('lcd1').textContent=a||'';el('lcd2').textContent=b||'';if(dim!=null)el('lcdDim').textContent=dim;drawOled(a,b)}
+function showRaw(t){el('rawOut').textContent=t}
+function kindOf(o){return ['star','planet','sun','moon','deep'][o.kind]||'obj'}
+
+function drawOled(l1,l2){
+  const c=el('oled'), ctx=c.getContext('2d');
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,128,64);
+  ctx.strokeStyle='#fff'; ctx.strokeRect(0,0,128,30);
+  ctx.fillStyle='#fff'; ctx.font='10px monospace';
+  ctx.fillText((l1||'').slice(0,20),4,12);
+  ctx.fillText((l2||'').slice(0,20),4,24);
+  ctx.fillText(site.setupDone?(status.connected?'LX200GPS':'DEMO')+' '+RATES[rate]:'SETUP',0,42);
+  ctx.fillText(site.setupDone?'IDLE   cli:1':'Enter site',0,54);
+  ctx.fillText('192.168.4.1',0,62);
+}
+
+function fillNow(){
+  const d=new Date();
+  el('su_year').value=d.getFullYear(); el('su_month').value=d.getMonth()+1; el('su_day').value=d.getDate();
+  el('su_hour').value=d.getHours(); el('su_minute').value=d.getMinutes(); el('su_second').value=d.getSeconds();
+  el('su_tz').value=-d.getTimezoneOffset();
+}
+function finishSetup(){
+  site.lat=+el('su_lat').value; site.lon=+el('su_lon').value; site.tz=+el('su_tz').value;
+  site.setupDone=true;
+  localStorage.setItem('lx200_setup', JSON.stringify(site));
+  el('setup').classList.add('hidden');
+  setLcd('Site saved', site.lat.toFixed(2)+','+site.lon.toFixed(2), 'Ready · Autostar II');
+  showRaw('SETUP OK → would push :St :Sg :SL :SC :SG to LX200 GPS over RS232');
+}
+function passFilter(o){
+  const k=kindOf(o), n=o.name.toUpperCase();
+  if(filter==='all') return true;
+  if(filter==='ss') return k==='planet'||k==='sun'||k==='moon';
+  if(filter==='star') return k==='star';
+  if(filter==='messier') return n.startsWith('M');
+  if(filter==='deep'||filter==='cald') return k==='deep';
+  return true;
+}
+function setFilter(f,btn){
+  filter=f;
+  document.querySelectorAll('.filters button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+  if(btn){document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}
+  setLcd('Object Library', f.toUpperCase(), 'SCROLL · ENTER');
+  renderCatalog();
+}
+function renderCatalog(){
+  const q=(el('search').value||'').toLowerCase();
+  filtered=catalog.filter(passFilter).filter(o=>o.name.toLowerCase().includes(q));
+  const box=el('catalog'); box.innerHTML='';
+  filtered.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className=(selected&&selected.name===o.name)?'on':'';
+    b.innerHTML=`<span>${o.name}</span><span style="color:#8c8">${o.mag}</span>`;
+    b.onclick=()=>{selIdx=i;selected=o;renderCatalog();setLcd('Select:',o.name,'ENTER · GO TO')};
+    box.appendChild(b);
+  });
+}
+function scrollSel(d){if(!filtered.length)return;selIdx=(selIdx+d+filtered.length)%filtered.length;selected=filtered[selIdx];renderCatalog();setLcd('Select:',selected.name,'')}
+function digit(d){el('search').value+=d;renderCatalog()}
+function keySpeed(){rate=(rate+1)%4;status.rate=RATES[rate];setLcd('SPEED',RATES[rate],'');showRaw('SPEED → '+RATES[rate]+' (:RG/:RC/:RM/:RS)')}
+function sim(m){setLcd(m,'OK (demo)','');showRaw(m)}
+function cmd(c){
+  const replies={':GR#':status.ra+'#',':GD#':status.dec+'#',':GA#':status.alt+'#',':GZ#':status.az+'#',':GV#':'LX200GPS-DEMO#'};
+  const t=replies[c]||'1';
+  setLcd(c,t.replace(/#/g,''),'LX200 GPS response');
+  showRaw(c+' → '+t+'  (Wi-Fi → ESP32 → MAX3232 → RS232)');
+}
+function pressEnter(){if(!selected){setLcd('ENTER','No object','');return}status.target=selected.name;setLcd('Target loaded',selected.name,'Press GO TO');showRaw('ENTER → '+selected.name)}
+function pressGoto(){if(!selected){setLcd('GO TO','No target','');return}setLcd('GO TO',selected.name,'Slewing…');showRaw('GO TO '+selected.name+' → :Sr :Sd :MS# :Te#');status.target=selected.name}
+function pressMode(){mode=(mode+1)%4;const n=['RA/Dec','Target','Alt/Az','Link'][mode];
+  if(mode===0)setLcd('RA '+status.ra,'Dec'+status.dec,n);
+  else if(mode===1)setLcd(status.target,status.rate,n);
+  else if(mode===2)setLcd('Alt '+status.alt,'Az '+status.az,n);
+  else setLcd('DEMO MODE','LX200GPS-DEMO',n);
+}
+
+fillNow();
+try{const s=JSON.parse(localStorage.getItem('lx200_setup')||'null'); if(s&&s.setupDone){site=s;el('setup').classList.add('hidden');setLcd('RA '+status.ra,'Dec'+status.dec,'Ready');showRaw('Setup restored from this browser');}}catch(e){}
+renderCatalog(); drawOled(el('lcd1').textContent, el('lcd2').textContent);
+</script>
+</body>
+</html>

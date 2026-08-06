@@ -1,0 +1,6 @@
+tools/.venv/
+.DS_Store
+*.bin
+*.elf
+*.map
+build/
